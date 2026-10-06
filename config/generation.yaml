@@ -1,0 +1,11 @@
+generation:
+  languages: [en, pt-BR, es]
+  answer_in_question_language: true
+  deterministic_templates: true
+  preserve_terms:
+    - MQSC commands
+    - IBM MQ object names
+    - AMQ message identifiers
+  external_generator:
+    enabled: false
+    # External generation must be source-grounded and separately reviewed before use.

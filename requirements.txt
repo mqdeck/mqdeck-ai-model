@@ -1,0 +1,4 @@
+-e .[dev]
+# Install training dependencies only on the training host:
+# pip install -e '.[train]'
+

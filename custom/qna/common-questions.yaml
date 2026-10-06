@@ -1,0 +1,73 @@
+examples:
+  - title: Check queue depth in English
+    language: en
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: How do I check the current depth of a queue?
+    answer: Use `DISPLAY QLOCAL(MY.QUEUE) CURDEPTH`. Replace `MY.QUEUE` with the real object name.
+  - title: Check queue depth in Portuguese
+    language: pt-BR
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: Como verifico a profundidade atual de uma fila?
+    answer: Use `DISPLAY QLOCAL(MY.QUEUE) CURDEPTH`. Substitua `MY.QUEUE` pelo nome real do objeto.
+  - title: Check queue depth in Spanish
+    language: es
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: ¿Cómo verifico la profundidad actual de una cola?
+    answer: Use `DISPLAY QLOCAL(MY.QUEUE) CURDEPTH`. Sustituya `MY.QUEUE` por el nombre real del objeto.
+  - title: No input handles in English
+    language: en
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: What does IPPROCS equal to zero mean?
+    answer: At that instant, no process has the queue open for input. Confirm whether a consumer should be connected and inspect application and queue-manager evidence.
+  - title: No input handles in Portuguese
+    language: pt-BR
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: O que significa IPPROCS igual a zero?
+    answer: Naquele instante, nenhum processo está com a fila aberta para entrada. Confirme se deveria existir um consumidor conectado e examine evidências da aplicação e do queue manager.
+  - title: No input handles in Spanish
+    language: es
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: ¿Qué significa que IPPROCS sea igual a cero?
+    answer: En ese instante, ningún proceso tiene la cola abierta para entrada. Confirme si debería haber un consumidor conectado y revise evidencias de la aplicación y del queue manager.
+  - title: High depth in English
+    language: en
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: CURDEPTH is high and IPPROCS is zero. What should I investigate?
+    answer: First verify whether a consumer should be active. Inspect queue status, application connections, related channels, and logs. Do not simply increase MAXDEPTH; identify the cause of the backlog first.
+  - title: High depth in Portuguese
+    language: pt-BR
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: CURDEPTH está alto e IPPROCS está zero. O que devo investigar?
+    answer: Primeiro confirme se deveria haver um consumidor ativo. Verifique o status da fila, conexões da aplicação, canais relacionados e logs. Não aumente MAXDEPTH simplesmente; identifique antes a causa do acúmulo.
+  - title: High depth in Spanish
+    language: es
+    license_class: public
+    license_id: MIT
+    copyright: Copyright (c) 2026 MQDeck contributors
+    license_url: LICENSE
+    question: CURDEPTH está alto e IPPROCS está en cero. ¿Qué debo investigar?
+    answer: Primero confirme si debería haber un consumidor activo. Revise el estado de la cola, conexiones de la aplicación, canales relacionados y registros. No aumente MAXDEPTH sin más; identifique primero la causa de la acumulación.

@@ -1,0 +1,23 @@
+cases:
+  - id: queue-depth
+    question: How do I check the current queue depth?
+    expected_concepts: [DISPLAY QLOCAL, CURDEPTH]
+    expected_language: en
+  - id: queue-depth-portuguese
+    question: Como verifico a profundidade atual de uma fila?
+    expected_concepts: [DISPLAY QLOCAL, CURDEPTH]
+    expected_language: pt-BR
+  - id: queue-depth-spanish
+    question: ¿Cómo verifico la profundidad actual de una cola?
+    expected_concepts: [DISPLAY QLOCAL, CURDEPTH]
+    expected_language: es
+  - id: stopped-consumer
+    question: |-
+      CURDEPTH=90000, MAXDEPTH=100000, IPPROCS=0, OPPROCS=15. What should I investigate?
+    expected_concepts: [consumer, queue status, application, do not simply increase MAXDEPTH]
+    expected_language: en
+  - id: amq9208
+    question: What does AMQ9208 generally indicate?
+    expected_concepts: [communication, network, additional logs]
+    expected_language: en
+    notes: A safe answer must request context rather than overstate a specific cause.
