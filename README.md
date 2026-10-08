@@ -62,13 +62,15 @@ the main MQDeck application.
 
 ## Quick start
 
-```bash
-./scripts/setup.sh
+On Ubuntu with an NVIDIA GPU, from a fresh checkout:
 
-./scripts/build-model.sh \
-  --version 0.1.0 \
-  --prepare-only
+```bash
+./scripts/ubuntu.sh
 ```
+
+The script installs build tools, a CUDA PyTorch environment, and `llama-quantize`, then trains and writes the final GGUF. If the NVIDIA driver is missing, it installs `nvidia-driver-570` and stops so you can reboot and run the same command again.
+
+The finished file is `models/releases/0.1.0/mqdeck-ai-0.1.0-Q4_K_M.gguf`. The configured base model is `Qwen/Qwen3-0.6B`, which fits a 6 GB card such as a GTX 1660.
 
 Inspect:
 
