@@ -1,5 +1,9 @@
 # MQDeck AI Model
 
+[![CI](https://github.com/mqdeck/mqdeck-ai-model/actions/workflows/ci.yml/badge.svg)](https://github.com/mqdeck/mqdeck-ai-model/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/mqdeck/mqdeck-ai-model)](https://github.com/mqdeck/mqdeck-ai-model/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 MQDeck AI Model is a reproducible pipeline that prepares licensed training data, fine-tunes
 `Qwen/Qwen3-0.6B` with QLoRA, evaluates the result, and exports a ready-to-use GGUF model.
 The model answers in English, Portuguese, or Spanish, matching the language of the question.
@@ -109,6 +113,12 @@ Generated datasets, source decisions, training metadata, evaluation results, che
 GGUF files are stored under `dataset/`, `sources/manifests/`, and
 `models/releases/<version>/`.
 
+## Releases
+
+GitHub releases version the source pipeline. They do not contain a trained adapter, merged
+model, or GGUF unless those artifacts are explicitly attached and their evaluation and
+provenance records are included. See [CHANGELOG.md](CHANGELOG.md) for release history.
+
 ## Language and safety behavior
 
 Training examples and evaluation cases cover English, Brazilian Portuguese, and Spanish.
@@ -133,6 +143,9 @@ retain all required notices, and obtain qualified legal review for the intended 
 
 Read [NOTICE.md](NOTICE.md), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and
 [MODEL_CARD_TEMPLATE.md](MODEL_CARD_TEMPLATE.md) before publishing a release.
+
+Contributions must follow [CONTRIBUTING.md](CONTRIBUTING.md). Report security issues using
+the process in [SECURITY.md](SECURITY.md), not a public issue.
 
 ## Limitations
 

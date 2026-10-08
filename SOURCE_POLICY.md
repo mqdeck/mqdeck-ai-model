@@ -57,7 +57,8 @@ Before distributing a dataset, adapter, merged model, or GGUF:
 
 1. Review `sources.json` and confirm every entry is included under the public policy.
 2. Confirm the exact base-model revision and retain its license and notices.
-3. Include `LICENSE`, `DATASET_LICENSE`, `THIRD_PARTY_NOTICES.md`, and a completed model card.
+3. Include `LICENSE`, `DATASET_LICENSE`, `BASE_MODEL_LICENSE.txt`,
+   `THIRD_PARTY_NOTICES.md`, and a completed model card.
 4. Run provenance, secret, personal-data, memorization, safety, and output-regression checks.
 5. Confirm that the release name and presentation do not imply vendor affiliation.
 6. Obtain counsel review for the intended jurisdictions and commercial distribution plan.
