@@ -33,7 +33,7 @@ validate_version() {
 require_python() {
   local executable="$1"
   command -v "$executable" >/dev/null 2>&1 ||
-    fail "Python was not found. Run ./scripts/setup.sh or ./scripts/ubuntu.sh first."
+    fail "Python was not found. Run ./scripts/setup.sh or ./scripts/run.sh first."
   "$executable" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' ||
     fail "Python 3.10 or newer is required."
 }

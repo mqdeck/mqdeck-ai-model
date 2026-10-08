@@ -11,7 +11,7 @@ DRY_RUN=0
 
 usage() {
   cat <<'EOF'
-Usage: ./scripts/build-model.sh [VERSION] [OPTIONS]
+Usage: ./scripts/build.sh [VERSION] [OPTIONS]
 
 Build the dataset, train the adapter, evaluate it, and export a GGUF release.
 

@@ -32,7 +32,7 @@ Compatibility sources:
 From the repository root, run:
 
 ```bash
-./scripts/ubuntu.sh
+./scripts/run.sh
 ```
 
 That command installs the required Ubuntu packages, creates `.venv`, installs the pinned
@@ -54,11 +54,11 @@ models/releases/0.1.0/mqdeck-ai-0.1.0-Q4_K_M.gguf
 To choose a release version:
 
 ```bash
-./scripts/ubuntu.sh --version 1.0.0
+./scripts/run.sh --version 1.0.0
 ```
 
-Use `./scripts/ubuntu.sh --help` to see the small set of supported options. A safe preview
-is available with `./scripts/ubuntu.sh --dry-run`.
+Use `./scripts/run.sh --help` to see the small set of supported options. A safe preview is
+available with `./scripts/run.sh --dry-run`.
 
 ## Add your own training knowledge
 
@@ -82,7 +82,7 @@ license_url: LICENSE
 Then run the same one-command build again:
 
 ```bash
-./scripts/ubuntu.sh --version 1.0.0
+./scripts/run.sh --version 1.0.0
 ```
 
 The public build fails closed when source ownership, license, provenance, or required
@@ -94,10 +94,10 @@ training and commercial redistribution. See [SOURCE_POLICY.md](SOURCE_POLICY.md)
 
 ```bash
 # Prepare and validate only the dataset; no GPU is required
-./scripts/ubuntu.sh --prepare-only
+./scripts/run.sh --prepare-only
 
 # Build on a machine that was already prepared
-./scripts/build-model.sh --version 1.0.0
+./scripts/build.sh --version 1.0.0
 
 # Create a local development environment and run checks
 ./scripts/setup.sh

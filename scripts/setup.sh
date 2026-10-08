@@ -19,4 +19,4 @@ info "Installing development dependencies"
 
 info "Development environment ready"
 echo "Run tests with: make test"
-echo "For the complete Ubuntu GPU setup and model build, run: ./scripts/ubuntu.sh"
+echo "For the complete Ubuntu GPU setup and model build, run: ./scripts/run.sh"

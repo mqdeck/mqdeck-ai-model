@@ -21,7 +21,7 @@ CONSTRAINTS="$MQDECK_ROOT/requirements/ubuntu-cu128.lock"
 
 usage() {
   cat <<'EOF'
-Usage: ./scripts/ubuntu.sh [VERSION] [OPTIONS]
+Usage: ./scripts/run.sh [VERSION] [OPTIONS]
 
 Prepare an Ubuntu NVIDIA machine and build the model in one command.
 
@@ -107,7 +107,7 @@ install_recommended_driver() {
   fi
   echo "Installing the compute driver recommended by Ubuntu for this GPU."
   "${SUDO[@]}" ubuntu-drivers install --gpgpu
-  printf '\nThe driver was installed. Reboot the machine, return to the repository, and run the same command:\n  ./scripts/ubuntu.sh'
+  printf '\nThe driver was installed. Reboot the machine, return to the repository, and run the same command:\n  ./scripts/run.sh'
   if (( ${#ORIGINAL_ARGS[@]} > 0 )); then
     printf ' %q' "${ORIGINAL_ARGS[@]}"
   fi
@@ -185,7 +185,7 @@ export PYTHON_BIN
 
 if [[ "$PREPARE_ONLY" == "1" ]]; then
   "$PYTHON_BIN" -m pip install -e "$MQDECK_ROOT"
-  "$MQDECK_ROOT/scripts/build-model.sh" --version "$VERSION" --prepare-only
+  "$MQDECK_ROOT/scripts/build.sh" --version "$VERSION" --prepare-only
   info "Dataset ready: $MQDECK_ROOT/dataset"
   exit 0
 fi
@@ -246,7 +246,7 @@ fi
 
 info "[6/6] Building MQDeck AI $VERSION"
 export LLAMA_CPP_PATH="$LLAMA_DIR"
-"$MQDECK_ROOT/scripts/build-model.sh" --version "$VERSION"
+"$MQDECK_ROOT/scripts/build.sh" --version "$VERSION"
 
 final_model="$MQDECK_ROOT/models/releases/$VERSION/mqdeck-ai-$VERSION-Q4_K_M.gguf"
 info "Model ready: $final_model"

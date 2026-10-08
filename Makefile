@@ -1,11 +1,11 @@
-.PHONY: help setup ubuntu prepare train evaluate export build test lint clean
+.PHONY: help setup run prepare train evaluate export build test lint clean
 
 VERSION ?= 0.1.0
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 
 help:
 	@echo "MQDeck AI commands"
-	@echo "  make ubuntu               Prepare Ubuntu GPU host and build everything"
+	@echo "  make run                  Prepare Ubuntu GPU host and build everything"
 	@echo "  make build                Build model on an already prepared host"
 	@echo "  make prepare              Prepare and validate the dataset"
 	@echo "  make test                 Run unit tests"
@@ -13,8 +13,8 @@ help:
 
 setup:
 	./scripts/setup.sh
-ubuntu:
-	./scripts/ubuntu.sh --version "$(VERSION)"
+run:
+	./scripts/run.sh --version "$(VERSION)"
 prepare:
 	./scripts/prepare.sh
 train:
@@ -24,7 +24,7 @@ evaluate:
 export:
 	./scripts/export.sh --version "$(VERSION)"
 build:
-	./scripts/build-model.sh --version "$(VERSION)"
+	./scripts/build.sh --version "$(VERSION)"
 test:
 	$(PYTHON) -m pytest
 lint:
