@@ -4,9 +4,10 @@
 
 - Model name: MQDeck AI
 - Version: VERSION
-- Base model: Qwen/Qwen3-4B
-- Base-model revision: 1cfa9a7208912126459214e8b04321603b3df60c
+- Base model: Qwen/Qwen3-0.6B
+- Base-model revision: c1899de289a04d12100db370d81485cdf75e47ca
 - Base-model license: Apache-2.0
+- Base-model license copy: `BASE_MODEL_LICENSE.txt`
 - Dataset license: MIT
 - Project license: MIT
 

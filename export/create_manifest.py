@@ -1,11 +1,33 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 from pipeline.io import read_jsonl, read_yaml, write_json
+
+
+def copy_verified_base_license(base_model: dict[str, object], destination: Path) -> None:
+    url = str(base_model["license_download_url"])
+    expected_sha256 = str(base_model["license_sha256"])
+    request = urllib.request.Request(url, headers={"User-Agent": "mqdeck-ai-model-release"})
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            content = response.read()
+    except (urllib.error.URLError, TimeoutError) as exc:
+        raise SystemExit(f"Unable to download the pinned base-model license: {exc}") from None
+
+    actual_sha256 = hashlib.sha256(content).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise SystemExit(
+            "Base-model license checksum mismatch: "
+            f"expected {expected_sha256}, received {actual_sha256}."
+        )
+    destination.write_bytes(content)
 
 
 def main() -> None:
@@ -62,6 +84,7 @@ def main() -> None:
             write_json(release / name, {"status": "not generated"})
     for name in ("LICENSE", "DATASET_LICENSE", "THIRD_PARTY_NOTICES.md"):
         shutil.copy2(root / name, release / name)
+    copy_verified_base_license(model["base_model"], release / "BASE_MODEL_LICENSE.txt")
     model_card = (root / "MODEL_CARD_TEMPLATE.md").read_text(encoding="utf-8")
     (release / "MODEL_CARD.md").write_text(
         model_card.replace("VERSION", args.version), encoding="utf-8"

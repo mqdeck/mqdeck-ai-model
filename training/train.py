@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+from typing import cast
 
 from training.utils import count_jsonl, hardware_summary, load_yaml, write_metadata
 
@@ -88,9 +89,13 @@ def main() -> None:
     dataset = load_dataset("json", data_files=data_files)
 
     def format_row(row: dict[str, object]) -> dict[str, str]:
+        messages = cast(list[dict[str, str]], row["messages"])
         return {
-            "text": tokenizer.apply_chat_template(
-                row["messages"], tokenize=False, add_generation_prompt=False
+            "text": cast(
+                str,
+                tokenizer.apply_chat_template(
+                    messages, tokenize=False, add_generation_prompt=False
+                ),
             )
         }
 

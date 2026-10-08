@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/lib/common.sh
+source "$SCRIPT_DIR/lib/common.sh"
+
 VERSION=""
 SKIP_MERGE=0
 while [[ $# -gt 0 ]]; do
@@ -10,11 +14,12 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown option: $1" >&2; exit 2 ;;
   esac
 done
-[[ -n "$VERSION" ]] || { echo "--version is required" >&2; exit 2; }
-cd "$ROOT"
+[[ -n "$VERSION" ]] || fail "--version is required."
+validate_version "$VERSION"
+cd "$MQDECK_ROOT"
 mkdir -p logs
-PYTHON_BIN="${PYTHON_BIN:-$ROOT/.venv/bin/python}"
-[[ -x "$PYTHON_BIN" ]] || PYTHON_BIN=python3
+PYTHON_BIN="$(python_bin)"
+require_python "$PYTHON_BIN"
 {
   if [[ "$SKIP_MERGE" == "0" ]]; then
     "$PYTHON_BIN" -m training.merge_adapter --version "$VERSION"

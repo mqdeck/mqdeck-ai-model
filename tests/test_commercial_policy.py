@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from pipeline.classify import filter_by_license
@@ -12,6 +13,7 @@ def test_default_build_is_public_and_remote_collection_is_disabled() -> None:
     assert policy["profile"] == "public"
     assert policy["remote_collection_enabled"] is False
     assert policy["allowed_license_ids"]["public"] == ["MIT"]
+    assert set(policy["allowed_license_ids"]) == {"public"}
 
 
 def test_bundled_corpus_passes_commercial_source_policy() -> None:
@@ -30,3 +32,5 @@ def test_default_base_model_has_permissive_release_metadata() -> None:
     assert base["commercial_use_confirmed"] is True
     assert base["redistribution_confirmed"] is True
     assert base["license_url"].startswith("https://huggingface.co/")
+    assert base["revision"] in base["license_download_url"]
+    assert re.fullmatch(r"[0-9a-f]{64}", base["license_sha256"])

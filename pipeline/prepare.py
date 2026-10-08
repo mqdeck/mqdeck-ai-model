@@ -16,23 +16,21 @@ from pipeline.validate_dataset import validate_examples
 LOGGER = logging.getLogger("mqdeck.prepare")
 
 
-def prepare(root: Path, profile: str, custom_only: bool = False) -> dict[str, int]:
+def prepare(root: Path) -> dict[str, int]:
     sources_config = read_yaml(root / "config" / "source_policy.yaml")
     training_config = read_yaml(root / "config" / "training.yaml")["dataset"]
     class_profiles = sources_config["build"]["allowed_license_classes"]
     license_profiles = sources_config["build"]["allowed_license_ids"]
-    if profile not in class_profiles or profile not in license_profiles:
-        raise ValueError(f"Unknown build profile: {profile}")
 
     documents = discover_custom(root / "custom")
     unique, duplicates = deduplicate(documents)
     included, decisions = filter_by_license(
-        unique, set(class_profiles[profile]), set(license_profiles[profile])
+        unique, set(class_profiles["public"]), set(license_profiles["public"])
     )
 
     if not included:
         raise ValueError(
-            f"No documents are eligible for the '{profile}' build profile. "
+            "No documents are eligible for the public build. "
             "Review source rights and classifications; do not weaken the filter merely to pass a build."
         )
 
@@ -72,12 +70,10 @@ def prepare(root: Path, profile: str, custom_only: bool = False) -> dict[str, in
 def main() -> None:
     parser = argparse.ArgumentParser(description="Prepare a traceable instruction dataset.")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--profile", choices=["public", "private"], default="public")
-    parser.add_argument("--custom-only", action="store_true")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     try:
-        stats = prepare(args.root.resolve(), args.profile, args.custom_only)
+        stats = prepare(args.root.resolve())
     except (TypeError, ValueError) as exc:
         raise SystemExit(f"Preparation failed: {exc}") from None
     print(json.dumps(stats, indent=2))

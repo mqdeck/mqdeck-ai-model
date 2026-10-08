@@ -27,6 +27,7 @@ def main() -> None:
         "training.json",
         "LICENSE",
         "DATASET_LICENSE",
+        "BASE_MODEL_LICENSE.txt",
         "THIRD_PARTY_NOTICES.md",
         "MODEL_CARD.md",
     ]

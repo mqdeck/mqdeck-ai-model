@@ -20,7 +20,12 @@ if [[ ! -d "$LLAMA_DIR" ]]; then
   git clone --depth 1 https://github.com/ggml-org/llama.cpp.git "$LLAMA_DIR"
 fi
 mkdir -p "$RELEASE"
-PYTHON_BIN="${PYTHON_BIN:-$ROOT/.venv/bin/python}"
+DEFAULT_CONVERTER_PYTHON="$ROOT/work/llama.cpp-venv/bin/python"
+if [[ -x "$DEFAULT_CONVERTER_PYTHON" ]]; then
+  PYTHON_BIN="${LLAMA_CPP_PYTHON:-$DEFAULT_CONVERTER_PYTHON}"
+else
+  PYTHON_BIN="${LLAMA_CPP_PYTHON:-${PYTHON_BIN:-$ROOT/.venv/bin/python}}"
+fi
 [[ -x "$PYTHON_BIN" ]] || PYTHON_BIN=python3
 CONVERTER="$LLAMA_DIR/convert_hf_to_gguf.py"
 if [[ ! -f "$CONVERTER" ]]; then

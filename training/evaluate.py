@@ -4,7 +4,7 @@ import argparse
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from training.utils import load_yaml, write_metadata
 
@@ -37,19 +37,24 @@ def generate_responses(model_path: Path, cases: list[dict[str, Any]]) -> dict[st
             "Evaluation dependencies are missing. Run: pip install -e '.[train]'"
         ) from exc
     tokenizer = AutoTokenizer.from_pretrained(str(model_path))
-    model = AutoModelForCausalLM.from_pretrained(
+    model: Any = AutoModelForCausalLM.from_pretrained(
         str(model_path), device_map="auto" if torch.cuda.is_available() else None
     )
     responses: dict[str, str] = {}
     for case in cases:
-        inputs = tokenizer.apply_chat_template(
-            [{"role": "user", "content": case["question"]}],
-            add_generation_prompt=True,
-            return_tensors="pt",
-        ).to(model.device)
+        inputs: Any = cast(
+            Any,
+            tokenizer.apply_chat_template(
+                [{"role": "user", "content": case["question"]}],
+                add_generation_prompt=True,
+                return_tensors="pt",
+            ),
+        )
+        inputs = inputs.to(model.device)
         output = model.generate(inputs, max_new_tokens=384, do_sample=False)
-        responses[case["id"]] = tokenizer.decode(
-            output[0][inputs.shape[-1] :], skip_special_tokens=True
+        responses[case["id"]] = cast(
+            str,
+            tokenizer.decode(output[0][inputs.shape[-1] :], skip_special_tokens=True),
         )
     return responses
 

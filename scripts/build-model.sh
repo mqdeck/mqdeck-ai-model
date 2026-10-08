@@ -1,90 +1,82 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION=""
-CUSTOM_ONLY=0
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/lib/common.sh
+source "$SCRIPT_DIR/lib/common.sh"
+
+VERSION="$MQDECK_DEFAULT_VERSION"
 PREPARE_ONLY=0
 DRY_RUN=0
-PROFILE="public"
 
 usage() {
-  echo "Usage: build-model.sh --version VERSION [--custom-only] [--prepare-only] [--dry-run] [--profile public|private]"
+  cat <<'EOF'
+Usage: ./scripts/build-model.sh [VERSION] [OPTIONS]
+
+Build the dataset, train the adapter, evaluate it, and export a GGUF release.
+
+Options:
+  --version VERSION     Release version (default: 0.1.0)
+  --prepare-only        Prepare and validate the dataset without training
+  --dry-run             Show the build phases without changing files
+  -h, --help            Show this help
+EOF
 }
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --version) VERSION="${2:-}"; shift 2 ;;
-    --custom-only) CUSTOM_ONLY=1; shift ;;
+    --version)
+      [[ $# -ge 2 ]] || fail "--version requires a value."
+      VERSION="$2"
+      shift 2
+      ;;
     --prepare-only) PREPARE_ONLY=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
-    --profile) PROFILE="${2:-}"; shift 2 ;;
+    # Retained for compatibility. All builds already use only custom/ content.
+    --custom-only) shift ;;
     -h|--help) usage; exit 0 ;;
-    *) echo "Unknown option: $1" >&2; usage; exit 2 ;;
+    -*) fail "Unknown option: $1" ;;
+    *) VERSION="$1"; shift ;;
   esac
 done
-[[ -n "$VERSION" ]] || { echo "--version is required" >&2; usage; exit 2; }
-[[ "$PROFILE" == "public" || "$PROFILE" == "private" ]] || { echo "Invalid profile: $PROFILE" >&2; exit 2; }
+validate_version "$VERSION"
 
-echo "MQDeck AI Model Builder"
-echo "======================="
-echo "Version: $VERSION"
-echo "Build profile: $PROFILE"
-echo "Languages: English, Portuguese, Spanish"
-echo "Language policy: answer in the question's language"
-echo
+printf 'MQDeck AI public build %s\n' "$VERSION"
 
 if [[ "$DRY_RUN" == "1" ]]; then
-  echo "Dry run; no files or models will be modified."
-  echo "[1/16] Validate Python, configuration, dataset paths, and training environment"
-  echo "[2/16] Remote collection disabled; use only explicitly licensed local content"
-  echo "[3/16] Discover custom files"
-  echo "[4/16] Normalize documents"
-  echo "[5/16] Deduplicate by SHA-256"
-  echo "[6/16] Apply $PROFILE license policy"
-  echo "[7/16] Generate source-grounded examples"
-  echo "[8/16] Validate safety, length, placeholders, duplicates, and provenance"
-  echo "[9/16] Split train/validation/test deterministically"
+  echo "No files or models will be changed."
+  echo "[1/5] Prepare and validate local, licensed training data"
   if [[ "$PREPARE_ONLY" == "1" ]]; then
-    echo "[10-16/16] Skip training and model export (--prepare-only)"
+    echo "[2-5/5] Skipped (--prepare-only)"
   else
-    echo "[10/16] Train QLoRA adapter"
-    echo "[11/16] Save checkpoints and training metadata"
-    echo "[12/16] Merge adapter with base model"
-    echo "[13/16] Evaluate expected concepts"
-    echo "[14/16] Convert merged model to F16 GGUF"
-    echo "[15/16] Quantize configured GGUF variants"
-    echo "[16/16] Create and checksum release models/releases/$VERSION"
+    echo "[2/5] Train the QLoRA adapter"
+    echo "[3/5] Merge the adapter with the pinned base model"
+    echo "[4/5] Run concept, safety, and language evaluation"
+    echo "[5/5] Convert, quantize, and package the GGUF release"
   fi
   exit 0
 fi
 
-cd "$ROOT"
+cd "$MQDECK_ROOT"
 mkdir -p logs
-PYTHON_BIN="${PYTHON_BIN:-$ROOT/.venv/bin/python}"
-[[ -x "$PYTHON_BIN" ]] || PYTHON_BIN=python3
-echo "[1/16] Environment"
-"$PYTHON_BIN" -c 'import sys; print("       Python", sys.version.split()[0]); assert sys.version_info >= (3, 10)'
+PYTHON_BIN="$(python_bin)"
+export PYTHON_BIN
+require_python "$PYTHON_BIN"
 
-echo "[2/16] Sources: local, explicitly licensed content only"
-
-echo "[3-9/16] Preparing and validating dataset"
-PREPARE_ARGS=(--profile "$PROFILE")
-if [[ "$CUSTOM_ONLY" == "1" ]]; then PREPARE_ARGS+=(--custom-only); fi
-./scripts/prepare.sh "${PREPARE_ARGS[@]}"
+info "[1/5] Preparing and validating the dataset"
+./scripts/prepare.sh
 
 if [[ "$PREPARE_ONLY" == "1" ]]; then
-  echo "DONE"
-  echo "Prepared dataset: $ROOT/dataset"
+  info "Dataset ready: $MQDECK_ROOT/dataset"
   exit 0
 fi
 
-echo "[10-11/16] Training adapter"
+info "[2/5] Training the QLoRA adapter"
 ./scripts/train.sh --version "$VERSION"
-echo "[12/16] Merging adapter"
+info "[3/5] Merging the adapter"
 "$PYTHON_BIN" -m training.merge_adapter --version "$VERSION" 2>&1 | tee -a logs/training.log
-echo "[13/16] Evaluating model"
+info "[4/5] Evaluating the model"
 ./scripts/evaluate.sh --version "$VERSION"
-echo "[14-16/16] Converting, quantizing, and releasing"
+info "[5/5] Exporting the GGUF release"
 ./scripts/export.sh --version "$VERSION" --skip-merge
-echo "DONE"
-echo "Release: $ROOT/models/releases/$VERSION"
+info "Build complete: $MQDECK_ROOT/models/releases/$VERSION"

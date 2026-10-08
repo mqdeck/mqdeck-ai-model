@@ -3,10 +3,8 @@ build:
   remote_collection_enabled: false
   allowed_license_classes:
     public: [public]
-    private: [public, internal]
   allowed_license_ids:
     public: [MIT]
-    private: [MIT, Proprietary-Authorized]
 
 source_policy:
   require_explicit_license: true
@@ -14,4 +12,3 @@ source_policy:
   reject_unknown_license: true
   reject_remote_urls: true
   reject_third_party_content_by_default: true
-

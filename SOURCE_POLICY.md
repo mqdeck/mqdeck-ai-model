@@ -45,10 +45,11 @@ claims independently and preserve contributor identity and license records.
 ## Base model
 
 The exact base-model revision must have an allowlisted permissive license and explicit
-commercial-use and redistribution confirmations. The default is Qwen/Qwen3-4B under
-Apache-2.0. Training and merge scripts refuse to continue when those confirmations are not
-present. Re-verify the exact remote model card and license immediately before a public
-release because upstream metadata can change.
+commercial-use and redistribution confirmations. The default is Qwen/Qwen3-0.6B under
+Apache-2.0, pinned to revision `c1899de289a04d12100db370d81485cdf75e47ca`.
+Training and merge scripts refuse to continue when those confirmations are not present.
+Re-verify the exact remote model card and license immediately before a public release
+because upstream metadata can change.
 
 ## Release review
 
@@ -60,4 +61,3 @@ Before distributing a dataset, adapter, merged model, or GGUF:
 4. Run provenance, secret, personal-data, memorization, safety, and output-regression checks.
 5. Confirm that the release name and presentation do not imply vendor affiliation.
 6. Obtain counsel review for the intended jurisdictions and commercial distribution plan.
-

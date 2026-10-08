@@ -15,18 +15,18 @@ dependencies = [
 
 [project.optional-dependencies]
 train = [
-  "accelerate>=0.30",
-  "bitsandbytes>=0.43; platform_system == 'Linux'",
-  "datasets>=2.19",
-  "peft>=0.11",
-  "torch>=2.2",
-  "transformers>=4.41",
-  "trl>=0.9",
+  "accelerate>=1.8,<2",
+  "bitsandbytes>=0.46,<0.47; platform_system == 'Linux'",
+  "datasets>=3.6,<4",
+  "peft>=0.16,<0.17",
+  "torch>=2.7,<2.8",
+  "transformers>=4.53,<4.54",
+  "trl>=0.19,<0.20",
 ]
 dev = ["black>=24.4", "mypy>=1.10", "pytest>=8", "ruff>=0.4", "types-PyYAML", "types-requests"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["pipeline", "training"]
+packages = ["pipeline", "training", "export"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
