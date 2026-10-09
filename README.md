@@ -39,6 +39,10 @@ That command installs the required Ubuntu packages, creates `.venv`, installs th
 CUDA training stack, validates the GPU, prepares `llama.cpp`, builds the dataset, trains and
 evaluates the model, and exports the release.
 
+The setup selects the compatible CUDA 12.8 PyTorch wheel automatically: `2.7.1` for Python
+3.10 through 3.13, and `2.9.1` for Python 3.14. Set `MQDECK_TORCH_VERSION` only when testing
+another version intentionally.
+
 If no working NVIDIA driver is present, the script installs the driver recommended by
 Ubuntu and stops. Reboot once, return to the repository, and run the same command again.
 The script is idempotent and continues from the prepared environment.

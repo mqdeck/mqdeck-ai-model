@@ -14,6 +14,7 @@ DRY_RUN=0
 SKIP_SYSTEM_PACKAGES=0
 INSTALL_DRIVER=1
 TORCH_INDEX_URL="${MQDECK_TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu128}"
+TORCH_VERSION="${MQDECK_TORCH_VERSION:-}"
 LLAMA_CPP_REF="${MQDECK_LLAMA_CPP_REF:-v0.6.0}"
 LLAMA_DIR="${LLAMA_CPP_PATH:-$MQDECK_ROOT/work/llama.cpp}"
 LLAMA_VENV="$MQDECK_ROOT/work/llama.cpp-venv"
@@ -35,6 +36,7 @@ Options:
 
 Advanced environment overrides:
   MQDECK_TORCH_INDEX_URL    PyTorch wheel index
+  MQDECK_TORCH_VERSION      Override the compatible PyTorch version
   MQDECK_LLAMA_CPP_REF      llama.cpp tag or commit
   LLAMA_CPP_PATH            Existing llama.cpp checkout
 EOF
@@ -183,6 +185,15 @@ PYTHON_BIN="$MQDECK_ROOT/.venv/bin/python"
 export PYTHON_BIN
 "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
 
+python_version="$("$PYTHON_BIN" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+if [[ -z "$TORCH_VERSION" ]]; then
+  if "$PYTHON_BIN" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 14) else 1)'; then
+    TORCH_VERSION="2.9.1"
+  else
+    TORCH_VERSION="2.7.1"
+  fi
+fi
+
 if [[ "$PREPARE_ONLY" == "1" ]]; then
   "$PYTHON_BIN" -m pip install -e "$MQDECK_ROOT"
   "$MQDECK_ROOT/scripts/build.sh" --version "$VERSION" --prepare-only
@@ -190,7 +201,8 @@ if [[ "$PREPARE_ONLY" == "1" ]]; then
   exit 0
 fi
 
-"$PYTHON_BIN" -m pip install torch==2.7.1 --index-url "$TORCH_INDEX_URL"
+info "Installing PyTorch $TORCH_VERSION for Python $python_version"
+"$PYTHON_BIN" -m pip install "torch==$TORCH_VERSION" --index-url "$TORCH_INDEX_URL"
 "$PYTHON_BIN" -m pip install --constraint "$CONSTRAINTS" -e "$MQDECK_ROOT[train]"
 
 "$PYTHON_BIN" - <<'PY'
